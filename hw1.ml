@@ -34,17 +34,10 @@ let p4 (p : bool) (q : bool) : bool =
 (* Q3: Forall, Exists on Booleans  *)
 
 let forallb (f : bool -> bool) : bool =
-  if f true && f false then
-    true
-  else
-    false
+  f true && f false
 
 let existsb (f : bool -> bool) : bool =
-    if f true || f false then
-      true
-    else
-      false
-
+    f true || f false
 
 (* Q4: Verifying Equivalences *)
 
