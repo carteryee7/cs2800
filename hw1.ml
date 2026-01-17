@@ -1,10 +1,10 @@
 (* Q1: Implementing Propositional Logic *)
 
 (* Implement the below function using only &&, ||, and `not`.
-   (You do not need to use all three of these primitives.)
+(You do not need to use all three of these primitives.)
 *)
 let implies (p : bool) (q : bool) : bool =
-  not p || q
+  (not p) || q
 
 (* Next, implement implies using only `if/then/else` expressions -- no `&&`, `||`, or `not`. You can also use `true` and `false`. *)
 let implies_if (p : bool) (q : bool) : bool =
@@ -47,7 +47,7 @@ let existsb (f : bool -> bool) : bool =
 *)
 let lemma_1 () : bool =
   forallb (fun p ->
-    p && p = p
+    (p && p) = p
   )
 
 (* Calculate the truth value of:
@@ -79,7 +79,7 @@ let lemma_3 () : bool =
 (* Simplify (not p) || q || p, and use forallb to verify that your simplification is correct. *)
 
 let prop_complex (p : bool) (q : bool) : bool =
-    (not p) || q || p
+  (not p) || q || p
 
 let prop_simple (p : bool) (q : bool) : bool =
   true
@@ -121,7 +121,7 @@ let exists_0_5 (f : int -> bool) : bool =
 let lemma_4 () : bool =
   forall_0_5 (fun x ->
     exists_0_5 (fun y ->
-      x - y = 0
+      (x - y) = 0
     )
   )
 
@@ -130,13 +130,13 @@ let lemma_4 () : bool =
     exists k \in [0..5],
       x = 2 * k
 
-  (Hint: mod is an infix operator that can go between numbers in OCaml, 
+  (Hint: mod is an infix operator that can go between numbers in OCaml,
     just like +, *, or -.)
 *)
 
 let lemma_5 () : bool =
   forall_0_5 (fun x ->
     implies (x mod 2 = 0) (exists_0_5 (fun k ->
-      x = 2 * k)
+      x = (2 * k))
     )
   )
