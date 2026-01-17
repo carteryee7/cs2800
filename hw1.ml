@@ -37,7 +37,7 @@ let forallb (f : bool -> bool) : bool =
   f true && f false
 
 let existsb (f : bool -> bool) : bool =
-    f true || f false
+  f true || f false
 
 (* Q4: Verifying Equivalences *)
 
@@ -47,7 +47,7 @@ let existsb (f : bool -> bool) : bool =
 *)
 let lemma_1 () : bool =
   forallb (fun p ->
-    p && p == p
+    p && p = p
   )
 
 (* Calculate the truth value of:
