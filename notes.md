@@ -189,3 +189,44 @@ forall indices 0 <= i <= j < length ys. ys[i] <= ys[j]
 
 2. for all elements in ys. elements in xs
 for all i. i count i xs = count i ys
+
+
+
+let rec sorted (xs: int list) : bool =
+    match xs with
+    | [] | [_] -> true
+    | x :: y :: xs' -> x <= y && sorted (y :: xs')
+
+
+let prop_sort_correct (sort: )
+
+
+
+Property Based Testing (PBT)
+1. Write down properties as predicates (functions that take any value as argument and return true or false depending on whether the property holds)
+2. use a random value generator for a (directed) sampling of the value space
+3. if counter-example is found, property is invalidated and does not hold
+4. if no counter-example is found, we only know that the property holds for the examples tested
+
+QuickCheck in Haskell
+Needed:
+1. generator for values
+2. test runner: check the property on a given number of random values
+    - if a counter-example is found it needs to be returned
+
+let gen_list (length_bound : int) (int_bound : int) (_ : unit) : int list =
+    let len = Random.int length_bound in
+    List.init len (fun _ -> Random.int int_bound)
+
+(* type counter_example = None | Some int list *) = int list option
+
+
+let rec forall_list (gen : unit -> int list) (prop : int list -> bool) (trials : int) : int list option =
+    if trials <= 0 then (* didn't find a counter example *) None else
+        let xs = gen () in
+        if prop xs then
+            forall_list gen prop (trials - 1)
+        else
+            Some xs
+
+forall_list (gen_list 100 1000) (prop_sort_correct isort) 1000;
