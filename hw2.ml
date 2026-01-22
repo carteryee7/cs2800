@@ -38,7 +38,9 @@ let rec string_of_int_tree (t : int_tree) : string =
 (* Q4 *)
 
 let rec map_int_tree (f : int -> int) (t : int_tree) : int_tree =
-  
+  match t with
+  | Leaf -> Leaf
+  | Node (x, y, z) -> Node (map_int_tree f x, f y, map_int_tree f x)
 
 (* Q5 *)
 let rec int_tree_max (t : int_tree) : int option = failwith "TODO"
