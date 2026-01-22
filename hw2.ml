@@ -20,17 +20,25 @@ and g (x : int list) : bool =
 
 (* Q3 *)
 
-type int_tree = 
+type int_tree =
   | Leaf
   | Node of (int_tree * int * int_tree)
 
-let rec gen_int_tree (depth : int) (bound : int) : int_tree = failwith "TODO"
+let rec gen_int_tree (depth : int) (bound : int) : int_tree =
+  if depth <= 0 then
+    Leaf
+  else
+    Node (gen_int_tree (depth - 1) bound, Random.int bound, gen_int_tree (depth - 1) bound)
 
-let rec string_of_int_tree (t : int_tree) : string = failwith "TODO"
+let rec string_of_int_tree (t : int_tree) : string =
+  match t with
+  | Leaf -> "leaf"
+  | Node (x, y, z) -> string_of_int_tree x ^ string_of_int y ^ string_of_int_tree z
 
 (* Q4 *)
 
-let rec map_int_tree (f : int -> int) (t : int_tree) : int_tree = failwith "TODO"
+let rec map_int_tree (f : int -> int) (t : int_tree) : int_tree =
+  
 
 (* Q5 *)
 let rec int_tree_max (t : int_tree) : int option = failwith "TODO"
