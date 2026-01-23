@@ -1,5 +1,5 @@
 (* If you would like, please write here how many hours you spent on the assignment: 
-  XXXX
+  2
 *)
 
 (* Q1 *)
@@ -33,19 +33,35 @@ let rec gen_int_tree (depth : int) (bound : int) : int_tree =
 let rec string_of_int_tree (t : int_tree) : string =
   match t with
   | Leaf -> "leaf"
-  | Node (x, y, z) -> string_of_int_tree x ^ string_of_int y ^ string_of_int_tree z
+  | Node (l, i, r) -> string_of_int_tree l ^ string_of_int i ^ string_of_int_tree r
 
 (* Q4 *)
 
 let rec map_int_tree (f : int -> int) (t : int_tree) : int_tree =
   match t with
   | Leaf -> Leaf
-  | Node (x, y, z) -> Node (map_int_tree f x, f y, map_int_tree f z)
+  | Node (l, i, r) -> Node (map_int_tree f l, f i, map_int_tree f r)
 
 (* Q5 *)
-let rec int_tree_max (t : int_tree) : int option = failwith "TODO"
-  
+let rec int_tree_max (t : int_tree) : int option =
+  match t with
+  | Leaf -> None
+  | Node (l, i, r) ->
+    let left_max = int_tree_max l in
+    let right_max = int_tree_max r in
+      match left_max, right_max with
+      | None, None -> Some i
+      | None, Some x | Some x, None -> Some (max x i)
+      | Some x, Some y -> Some (max y (max x i))
 
 (* Q6 *)
 
-let rec sorted (t : int_tree) : bool = failwith "TODO"
+let rec sorted (t : int_tree) : bool =
+  match t with
+  | Leaf -> true
+  | Node (x, i, y) ->
+    match int_tree_max x, int_tree_max y with
+    | None, None -> if i = 0 then true else false
+    | None, Some x -> if i <= x then true else false
+    | Some x, None -> if i >= x then true else false
+    | Some x, Some y -> if (i >= x) && (i <= y) then true else false
