@@ -32,8 +32,8 @@ let rec gen_int_tree (depth : int) (bound : int) : int_tree =
 
 let rec string_of_int_tree (t : int_tree) : string =
   match t with
-  | Leaf -> "leaf"
-  | Node (l, i, r) -> string_of_int_tree l ^ string_of_int i ^ string_of_int_tree r
+  | Leaf -> "Leaf"
+  | Node (l, i, r) -> "Node(" ^ string_of_int_tree l ^ ", " ^ string_of_int i ^ ", " ^ string_of_int_tree r ^ ")"
 
 (* Q4 *)
 
@@ -56,12 +56,32 @@ let rec int_tree_max (t : int_tree) : int option =
 
 (* Q6 *)
 
+let rec int_tree_min (t : int_tree) : int option =
+  match t with
+  | Leaf -> None
+  | Node (l, i, r) ->
+    let left_min = int_tree_min l in
+    let right_min = int_tree_min r in
+    match left_min, right_min with
+    | None, None -> Some i
+    | None, Some x | Some x, None -> Some (min x i)
+    | Some x, Some y -> Some (min y (min x i))
+
 let rec sorted (t : int_tree) : bool =
   match t with
   | Leaf -> true
-  | Node (x, i, y) ->
-    match int_tree_max x, int_tree_max y with
-    | None, None -> if i = 0 then true else false
-    | None, Some x -> if i <= x then true else false
-    | Some x, None -> if i >= x then true else false
-    | Some x, Some y -> if (i >= x) && (i <= y) then true else false
+  | Node (l, i, r) ->
+    let left_sorted = sorted l in
+    let right_sorted = sorted r in
+    let left_ok =
+      match int_tree_max l with
+      | None -> true
+      | Some max_l -> i >= max_l
+    in
+    let right_ok =
+      match int_tree_min r with
+      | None -> true
+      | Some min_r -> i <= min_r
+    in
+    left_sorted && right_sorted && left_ok && right_ok
+
