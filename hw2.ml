@@ -1,5 +1,5 @@
-(* If you would like, please write here how many hours you spent on the assignment: 
-  2
+(* If you would like, please write here how many hours you spent on the assignment:
+  2.5
 *)
 
 (* Q1 *)
@@ -73,15 +73,15 @@ let rec sorted (t : int_tree) : bool =
   | Node (l, i, r) ->
     let left_sorted = sorted l in
     let right_sorted = sorted r in
-    let left_ok =
+    let left_good =
       match int_tree_max l with
       | None -> true
-      | Some max_l -> i >= max_l
+      | Some max_left -> i >= max_left
     in
-    let right_ok =
+    let right_good =
       match int_tree_min r with
       | None -> true
-      | Some min_r -> i <= min_r
+      | Some min_right -> i <= min_right
     in
-    left_sorted && right_sorted && left_ok && right_ok
+    left_sorted && right_sorted && left_good && right_good
 
