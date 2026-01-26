@@ -190,7 +190,9 @@ forall indices 0 <= i <= j < length ys. ys[i] <= ys[j]
 2. for all elements in ys. elements in xs
 for all i. i count i xs = count i ys
 
-
+forall
+count
+same_elements
 
 let rec sorted (xs: int list) : bool =
     match xs with
@@ -230,3 +232,93 @@ let rec forall_list (gen : unit -> int list) (prop : int list -> bool) (trials :
             Some xs
 
 forall_list (gen_list 100 1000) (prop_sort_correct isort) 1000;
+
+
+Insertion Sort
+
+let rec insert (x : int) (xs : int list) : int list =
+    match xs with
+    | [] -> [x]
+    | y :: xs' -> if x <= y then x :: y :: xs' else y :: insert x xs'
+
+let rec isort (xs : int list) : int list =
+    match xs with
+    | [] -> []
+    | x :: xs' -> insert x (isort xs')
+
+
+Bintrees
+
+type bintree =
+| Leaf of int
+| Branch of bintree * bintree
+
+(* Structural recursive template *)
+let rec bintree_func (bt : bintree) : ?? =
+    match bt with
+    | Leaf v -> v
+    | Branch (l, r) -> ... bintree_func l ... bintree_func r ...
+
+let rec sum_bintree (bt : bintree) : int =
+    match bt with
+    | Leaf v -> v
+    | Branch (l, r) -> sum_bintree l + sum_bintree r
+
+(*
+ /\
+/\/\
+1234 -> 4321  *)
+let rec flip_tree (bt : bintree) : bintree =
+    match bt with
+    | Leaf v -> Leaf v
+    | Branch (l, r) -> Branch(flip_tree r, flip_tree l)
+
+(* Generator for bintrees *) (Same depth for each tree, but you can change with random depths)
+let gen_bintree (depth_bound : int) (int_bount : int) (_ : unit) : bintree =
+    let rec make_tree (depth : int) : bintree =
+        if depth <= 0 then Leaf Random.int (int_bound)
+        else Branch (make_tree (depth - 1), make_tree (depth - 1))
+    in
+    make_tree (Random.int depth_bound)
+
+(* Property checker for bintree *)
+let rec forall_bintree (gen : unit) (prop : bintree -> bool) (trials : int) : bintree option =
+    if trials <= 0 then None else
+        let bt = gen () in
+        if prop bt then
+            forall_bintree gen prop (trials - 1)
+        else
+            Some bt
+
+(* Property: flipped tree is not equal to original tree (not true tho ex. leaf 1 or symmetrical tree)*) (false)
+let prop_flip_tree_not_eq (flip_tree : bintree -> bintree) : bintree -> bool =
+    fun (bt : bintree) ->
+        not (flip_tree bt = bt)
+
+(* Property: for all bt, flip_tree (flip_tree bt) = bt *) (true)
+let prop_flip_tree_involutive (flip_tree : bintree -> bintree) : bintree -> bool =
+    fun (bt : bintree) ->
+        flip_tree (flip_tree bt) = bt
+
+let test_flip_tree_not_eq () =
+    forall_bintree (gen_bintree 20 100) (prop_flip_tree_not_eq flip_tree) 1000
+
+let test_flip_tree_involutive () =
+    forall_bintree (gen_bintree 20 100) (prop_flip_tree_involutive flip_tree) 1000
+
+
+type entry { tag : string; value : int }
+
+Tagged Bintrees
+
+type tagged_bintree =
+| Leaf of entry
+| Branch of tagged_bintree * tagged_bintree
+
+let rec sum_tagged_bintree (bt: tagged_bintree) : int =
+    match bt with
+    (* | Leaf { tag = t; value = v } -> v   Match on whole record *)
+    (* | Leaf { tag = _; value = v } -> v   Ignore value of a field *)
+    (* | Leaf { value = v; _ } -> v         Ignore any additional fields *)
+    | Leaf {value; _} -> value      (* Field name punning *)
+    | Branch (l, r) -> sum_tagged_bintree l + sum_tagged_bintree r
