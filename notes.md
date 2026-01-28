@@ -322,3 +322,25 @@ let rec sum_tagged_bintree (bt: tagged_bintree) : int =
     (* | Leaf { value = v; _ } -> v         Ignore any additional fields *)
     | Leaf {value; _} -> value      (* Field name punning *)
     | Branch (l, r) -> sum_tagged_bintree l + sum_tagged_bintree r
+
+
+
+let rec collect_tagged (t : string) (bt : tagged_bintree) : int list =
+    match bt with
+    | Leaf { tag; value } -> if t = tag then [value] else []
+    | Branch (l, r) -> collect_tagged t l @ collect_tagged t r
+
+
+let rec append (xs : int list) (ys : int list) : int list =
+    match xs with
+    | [] -> ys
+    | x :: xs' -> x :: append xs' ys
+
+let rec sum_tagged (t : string) (bt : tagged_bintree) : int =
+    match bt with
+    | Leaf { tag; value } when t = tag -> value
+    | Leaf _ -> 0
+    | Branch (l, r) -> sum_tagged t l + sum_tagged t r
+
+
+Generator and Property Tester for tagged_bintree
